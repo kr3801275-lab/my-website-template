@@ -2,62 +2,50 @@
 <html lang="en">
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #050505; }
-        .logo-font { font-family: 'Dancing Script', cursive; }
+        body { background: #0f0f0f; color: white; font-family: sans-serif; }
         
-        /* Rotating Border Animation */
-        .border-glow {
+        /* Gemini-style subtle gradient border */
+        .chatbox-wrapper {
             position: relative;
-            background: #050505;
-            border-radius: 12px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1px; /* Border thickness */
         }
-        .border-glow::before {
+        .chatbox-wrapper::before {
             content: "";
             position: absolute;
-            inset: -2px;
-            background: linear-gradient(45deg, #06b6d4, #8b5cf6, #ec4899, #06b6d4);
-            background-size: 400%;
-            border-radius: 14px;
-            animation: animate 6s linear infinite;
+            inset: -1px;
+            border-radius: 17px;
+            background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4);
             z-index: -1;
+            opacity: 0.6;
         }
-        @keyframes animate { 0% { background-position: 0 0; } 100% { background-position: 400% 0; } }
-        
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); }
+        .input-area { background: #1a1a1a; }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col">
-    <!-- Navbar -->
-    <nav class="flex justify-between items-center p-8">
-        <h1 class="text-4xl logo-font text-indigo-400">Nexus</h1>
-        <button class="border border-indigo-500 px-6 py-2 rounded-full hover:bg-indigo-600 transition">Sign In</button>
+<body class="min-h-screen flex flex-col">
+    <nav class="flex justify-between items-center p-6">
+        <h1 class="text-2xl font-bold tracking-tighter">Nexus</h1>
+        <button class="bg-gray-800 px-5 py-2 rounded-full hover:bg-gray-700">Sign In</button>
     </nav>
 
-    <!-- Main -->
-    <main class="flex-grow flex flex-col items-center justify-center p-6 text-center">
-        <h2 class="text-5xl font-bold tracking-tight mb-12 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">
+    <main class="flex-grow flex flex-col items-center justify-center p-6">
+        <h2 class="text-4xl font-semibold mb-10 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">
             Turn Your Vision Into Reality with Nexus
         </h2>
         
-        <!-- Animated Input Box -->
-        <div class="w-full max-w-2xl border-glow p-1 glass">
-            <textarea class="w-full bg-transparent outline-none p-4 min-h-[120px]" placeholder="Describe your masterpiece..."></textarea>
-            <div class="flex justify-between items-center p-2 border-t border-white/10">
-                <button class="hover:text-indigo-400 transition">📎 Attach</button>
-                <button class="bg-indigo-600 px-8 py-2 rounded-full font-bold hover:scale-105 transition">Generate</button>
+        <div class="w-full max-w-2xl chatbox-wrapper">
+            <textarea class="w-full input-area rounded-xl p-5 outline-none min-h-[140px]" placeholder="Describe an app and let Nexus do the rest"></textarea>
+            <div class="flex justify-between items-center px-4 pb-3">
+                <div class="flex gap-4">
+                    <button class="text-gray-400 hover:text-white">🎙️</button>
+                    <button class="text-gray-400 hover:text-white">➕</button>
+                </div>
+                <button class="bg-gray-800 px-6 py-2 rounded-full hover:bg-gray-700 text-sm flex items-center gap-2">
+                    ✨ I'm feeling lucky
+                </button>
             </div>
-        </div>
-
-        <!-- Payment -->
-        <div class="mt-16 glass p-8 rounded-2xl w-full max-w-sm border border-white/10">
-            <h3 class="text-xl font-bold mb-4">Support Nexus</h3>
-            <div class="bg-white p-2 rounded-lg mb-4 mx-auto w-32">
-                <img src="YOUR_QR_CODE_URL" alt="UPI QR">
-            </div>
-            <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">Only for India</p>
-            <button onclick="alert('Copied!')" class="text-indigo-400 text-sm hover:underline">Copy UPI ID</button>
         </div>
     </main>
 </body>
