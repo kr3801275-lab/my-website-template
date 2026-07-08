@@ -1,67 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #050505; color: white; font-family: sans-serif; }
-        .chatbox-wrapper {
-            position: relative;
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 1px;
-        }
-        /* Yeh hai wo glowing lighting effect */
-        .chatbox-wrapper::before {
-            content: "";
-            position: absolute;
-            inset: -2px;
-            border-radius: 18px;
-            background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4);
-            z-index: -1;
-            opacity: 0.8;
-            filter: blur(2px);
-        }
+        body { background-color: #050505; color: white; font-family: 'Segoe UI', sans-serif; }
+        .chat-area { height: calc(100vh - 180px); overflow-y: auto; scroll-behavior: smooth; }
+        .user-msg { background: #3b82f6; align-self: flex-end; border-radius: 18px 18px 4px 18px; }
+        .ai-msg { background: #1a1a1a; align-self: flex-start; border-radius: 18px 18px 18px 4px; border: 1px solid #333; }
+        /* Custom Scrollbar */
+        .chat-area::-webkit-scrollbar { width: 6px; }
+        .chat-area::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
+<body class="flex flex-col h-screen">
 
-    <h1 class="text-4xl font-bold mb-10 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">
-        Nexus Pro
-    </h1>
-    
-    <div class="w-full max-w-2xl chatbox-wrapper">
-        <textarea id="nexusInput" class="w-full bg-[#1a1a1a] rounded-xl p-5 outline-none min-h-[140px] text-white" placeholder="Describe an app..."></textarea>
-        <div class="flex justify-between items-center px-4 pb-3">
-            <button class="text-gray-400 hover:text-white">📎 Attach</button>
-            <!-- Tera naya Send Button -->
-            <button id="sendBtn" class="bg-blue-600 hover:bg-blue-500 text-white rounded-full p-3 transition-all">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    <!-- Header -->
+    <header class="p-4 border-b border-gray-800 text-center font-bold text-xl bg-[#0a0a0a]">
+        NEXUS AI <span class="text-blue-500">PRO</span>
+    </header>
+
+    <!-- Chat Display Area -->
+    <div id="chatDisplay" class="chat-area p-4 flex flex-col gap-4 max-w-2xl mx-auto w-full">
+        <!-- AI Welcome Message -->
+        <div class="ai-msg p-4 max-w-[80%]">Hey! Main Nexus hoon. Batao, aaj kya build karna hai? 🚀</div>
+    </div>
+
+    <!-- Sticky Input Area -->
+    <div class="p-4 bg-[#050505]">
+        <div class="max-w-2xl mx-auto bg-[#1a1a1a] rounded-2xl border border-gray-700 p-2 flex items-center">
+            <textarea id="nexusInput" rows="1" class="w-full bg-transparent outline-none p-2 text-white resize-none" placeholder="Describe your app idea..."></textarea>
+            <button id="sendBtn" class="bg-blue-600 p-3 rounded-full hover:bg-blue-500 transition">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>
         </div>
     </div>
 
     <script>
+        const chatDisplay = document.getElementById('chatDisplay');
         const input = document.getElementById('nexusInput');
         const btn = document.getElementById('sendBtn');
         const webhook = "https://eojia499pt81q60.m.pipedream.net";
 
-        async function sendMsg() {
-            if(!input.value.trim()) return;
-            const text = input.value;
-            input.value = "Nexus is thinking...";
-            
+        function addMsg(text, type) {
+            const div = document.createElement('div');
+            div.className = `p-4 max-w-[80%] ${type === 'user' ? 'user-msg ml-auto' : 'ai-msg'}`;
+            div.innerText = text;
+            chatDisplay.appendChild(div);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const text = input.value.trim();
+            if(!text) return;
+
+            addMsg(text, 'user');
+            input.value = "";
+
             try {
                 const res = await fetch(webhook, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ prompt: text })
                 });
-                input.value = await res.text();
-            } catch(e) { input.value = "Error!"; }
+                const answer = await res.text();
+                addMsg(answer.replace(/<\/?[^>]+(>|$)/g, ""), 'ai');
+            } catch(e) {
+                addMsg("Error: Nexus response nahi de raha.", 'ai');
+            }
         }
 
-        btn.addEventListener('click', sendMsg);
-        input.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
+        btn.addEventListener('click', sendMessage);
+        input.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
     </script>
 </body>
 </html>
