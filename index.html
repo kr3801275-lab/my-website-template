@@ -1,60 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { background-color: #050505; color: white; font-family: sans-serif; }
-        .chat-wrapper { max-width: 600px; margin: 0 auto; background: #1a1a1a; border-radius: 20px; padding: 10px; border: 1px solid #333; }
-        textarea { width: 100%; background: transparent; border: none; outline: none; color: white; padding: 15px; min-height: 100px; resize: none; }
-        #sendBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+        body { background: #050505; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .chat-box { width: 90%; max-width: 600px; background: #1a1a1a; border-radius: 20px; padding: 15px; border: 1px solid #333; }
+        textarea { width: 100%; background: transparent; border: none; outline: none; color: white; font-size: 16px; min-height: 100px; resize: none; }
+        .controls { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 10px; }
+        button { background: #3b82f6; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; }
+        button:disabled { background: #555; cursor: not-allowed; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="chat-wrapper">
-        <textarea id="nexusInput" placeholder="Describe your masterpiece..."></textarea>
-        <div class="flex justify-between items-center px-2 pb-2">
-            <button class="text-gray-400 hover:text-white p-2">📎</button>
-            <button id="sendBtn" class="bg-white/10 hover:bg-white/20 text-white rounded-full p-3 transition" disabled>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-            </button>
-        </div>
+<div class="chat-box">
+    <textarea id="nexusInput" placeholder="Describe your masterpiece..."></textarea>
+    <div class="controls">
+        <span style="color: gray; font-size: 12px;">Nexus AI</span>
+        <button id="sendBtn" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </button>
     </div>
+</div>
 
-    <script>
-        const input = document.getElementById('nexusInput');
-        const btn = document.getElementById('sendBtn');
-        const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
+<script>
+    const input = document.getElementById('nexusInput');
+    const btn = document.getElementById('sendBtn');
+    const url = "https://eojia499pt81q60.m.pipedream.net";
 
-        // Button activate/deactivate
-        input.addEventListener('input', () => btn.disabled = !input.value.trim());
+    input.addEventListener('input', () => btn.disabled = !input.value.trim());
 
-        async function sendData() {
-            const text = input.value.trim();
-            if (!text) return;
+    async function sendMsg() {
+        if(!input.value.trim()) return;
+        const oldVal = input.value;
+        input.value = "Thinking...";
+        input.disabled = btn.disabled = true;
 
-            input.value = "Thinking...";
-            input.disabled = btn.disabled = true;
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ prompt: oldVal })
+            });
+            input.value = await res.text();
+        } catch(e) { input.value = "Error!"; }
+        finally { input.disabled = btn.disabled = false; }
+    }
 
-            try {
-                const res = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text })
-                });
-                const result = await res.text();
-                input.value = result.replace(/<\/?[^>]+(>|$)/g, "");
-            } catch {
-                input.value = "Error connecting to Nexus.";
-            } finally {
-                input.disabled = btn.disabled = false;
-            }
-        }
+    btn.addEventListener('click', sendMsg);
+    input.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
+</script>
 
-        btn.addEventListener('click', sendData);
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendData(); }
-        });
-    </script>
 </body>
 </html>
