@@ -1,36 +1,67 @@
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const textarea = document.querySelector('textarea');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0f0f0f; color: white; }
+        .chatbox-wrapper {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1px;
+        }
+        .chatbox-wrapper::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 17px;
+            background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4);
+            z-index: -1;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <nav class="flex justify-between items-center p-6">
+        <h1 class="text-2xl font-bold tracking-tighter">Nexus</h1>
+        <button class="bg-gray-800 px-5 py-2 rounded-full hover:bg-gray-700">Sign In</button>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-6">
+        <h2 class="text-4xl font-semibold mb-10 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">
+            Turn Your Vision Into Reality with Nexus
+        </h2>
         
-        async function sendToNexus(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                const userInput = textarea.value;
-                const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
+        <div class="w-full max-w-2xl chatbox-wrapper">
+            <textarea id="nexusInput" class="w-full bg-[#1a1a1a] rounded-xl p-5 outline-none min-h-[140px]" placeholder="Describe an app and let Nexus do the rest"></textarea>
+        </div>
+    </main>
 
-                if (!userInput.trim()) return;
+    <script>
+        const textarea = document.getElementById('nexusInput');
+        const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
 
+        textarea.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const text = textarea.value.trim();
+                if (!text) return;
+
+                textarea.value = "Sending...";
                 try {
-                    // Feedback ke liye ek chhota sa visual indicator
-                    textarea.style.opacity = "0.5"; 
-                    
-                    const response = await fetch(webhookUrl, {
+                    await fetch(webhookUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ prompt: userInput })
+                        body: JSON.stringify({ prompt: text })
                     });
-                    
-                    if (response.ok) {
-                        textarea.value = "";
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
-                } finally {
-                    textarea.style.opacity = "1";
+                    textarea.value = "";
+                    alert("Nexus got your message!");
+                } catch (err) {
+                    textarea.value = text;
+                    alert("Backend failed!");
                 }
             }
-        }
-        
-        textarea.addEventListener('keydown', sendToNexus);
-    });
-</script>
+        });
+    </script>
+</body>
+</html>
