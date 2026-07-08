@@ -4,32 +4,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #050505; color: white; font-family: sans-serif; }
-        .chat-container {
-            width: 100%;
-            max-width: 600px;
-            background: #1a1a1a;
-            border-radius: 16px;
-            border: 1px solid #333;
-            padding: 16px;
-        }
+        .chat-wrapper { max-width: 600px; margin: 0 auto; background: #1a1a1a; border-radius: 20px; padding: 10px; border: 1px solid #333; }
+        textarea { width: 100%; background: transparent; border: none; outline: none; color: white; padding: 15px; min-height: 100px; resize: none; }
+        #sendBtn:disabled { opacity: 0.3; cursor: not-allowed; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
 
-    <h2 class="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">
-        Nexus AI
-    </h2>
-
-    <div class="chat-container">
-        <textarea 
-            id="nexusInput" 
-            class="w-full bg-transparent outline-none text-white min-h-[100px] mb-4" 
-            placeholder="Describe your idea..."></textarea>
-        
-        <div class="flex justify-between items-center border-t border-gray-700 pt-3">
-            <button class="text-gray-400 hover:text-white">📎 Attach</button>
-            <button id="sendBtn" class="bg-indigo-600 px-5 py-2 rounded-lg hover:bg-indigo-500 transition">
-                Generate
+    <div class="chat-wrapper">
+        <textarea id="nexusInput" placeholder="Describe your masterpiece..."></textarea>
+        <div class="flex justify-between items-center px-2 pb-2">
+            <button class="text-gray-400 hover:text-white p-2">📎</button>
+            <button id="sendBtn" class="bg-white/10 hover:bg-white/20 text-white rounded-full p-3 transition" disabled>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
             </button>
         </div>
     </div>
@@ -37,30 +24,36 @@
     <script>
         const input = document.getElementById('nexusInput');
         const btn = document.getElementById('sendBtn');
-        const webhook = "https://eojia499pt81q60.m.pipedream.net";
+        const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
 
-        async function processRequest() {
-            if(!input.value.trim()) return;
-            
-            const originalText = input.value;
+        // Button activate/deactivate
+        input.addEventListener('input', () => btn.disabled = !input.value.trim());
+
+        async function sendData() {
+            const text = input.value.trim();
+            if (!text) return;
+
             input.value = "Thinking...";
-            
+            input.disabled = btn.disabled = true;
+
             try {
-                const res = await fetch(webhook, {
+                const res = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: originalText })
+                    body: JSON.stringify({ prompt: text })
                 });
-                const data = await res.text();
-                input.value = data.replace(/<\/?[^>]+(>|$)/g, "");
-            } catch (e) {
-                input.value = "Error: Check Pipedream logs.";
+                const result = await res.text();
+                input.value = result.replace(/<\/?[^>]+(>|$)/g, "");
+            } catch {
+                input.value = "Error connecting to Nexus.";
+            } finally {
+                input.disabled = btn.disabled = false;
             }
         }
 
-        btn.addEventListener('click', processRequest);
+        btn.addEventListener('click', sendData);
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processRequest(); }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendData(); }
         });
     </script>
 </body>
