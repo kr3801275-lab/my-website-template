@@ -1,28 +1,36 @@
 <script>
-    async function sendToNexus(event) {
-        // Enter press karne par trigger hoga
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault(); // Nayi line na bane
-            const userInput = document.querySelector('textarea').value;
-            const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
+    document.addEventListener("DOMContentLoaded", () => {
+        const textarea = document.querySelector('textarea');
+        
+        async function sendToNexus(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                const userInput = textarea.value;
+                const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
 
-            if (!userInput) return;
+                if (!userInput.trim()) return;
 
-            try {
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: userInput })
-                });
-                if (response.ok) {
-                    console.log("Nexus ko message mil gaya!");
-                    document.querySelector('textarea').value = ""; // Text area saaf ho jayega
+                try {
+                    // Feedback ke liye ek chhota sa visual indicator
+                    textarea.style.opacity = "0.5"; 
+                    
+                    const response = await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: userInput })
+                    });
+                    
+                    if (response.ok) {
+                        textarea.value = "";
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                } finally {
+                    textarea.style.opacity = "1";
                 }
-            } catch (error) {
-                console.error("Error:", error);
             }
         }
-    }
-    // Textarea mein event listener add kar do
-    document.querySelector('textarea').addEventListener('keydown', sendToNexus);
+        
+        textarea.addEventListener('keydown', sendToNexus);
+    });
 </script>
