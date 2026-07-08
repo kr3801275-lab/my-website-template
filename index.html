@@ -1,32 +1,28 @@
 <script>
-    async function sendToNexus() {
-        const userInput = document.querySelector('textarea').value;
-        const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
+    async function sendToNexus(event) {
+        // Enter press karne par trigger hoga
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault(); // Nayi line na bane
+            const userInput = document.querySelector('textarea').value;
+            const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
 
-        if (!userInput) return alert("Kuch likho toh sahi bhai!");
+            if (!userInput) return;
 
-        // UI Feedback (Button loading state)
-        const btn = document.querySelector('.lucky-btn');
-        btn.innerText = "Processing...";
-
-        try {
-            const response = await fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: userInput })
-            });
-
-            if (response.ok) {
-                alert("Nexus ko tera idea mil gaya! Workflow chal raha hai.");
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: userInput })
+                });
+                if (response.ok) {
+                    console.log("Nexus ko message mil gaya!");
+                    document.querySelector('textarea').value = ""; // Text area saaf ho jayega
+                }
+            } catch (error) {
+                console.error("Error:", error);
             }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Backend se connect nahi ho paya, check kar bhai.");
-        } finally {
-            btn.innerText = "✨ I'm feeling lucky";
-            <button onclick="sendToNexus()" class="lucky-btn bg-gray-800 px-6 py-2 rounded-full hover:bg-gray-700 text-sm flex items-center gap-2">
-    ✨ I'm feeling lucky
-</button>
         }
     }
+    // Textarea mein event listener add kar do
+    document.querySelector('textarea').addEventListener('keydown', sendToNexus);
 </script>
