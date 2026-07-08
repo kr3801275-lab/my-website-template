@@ -2,48 +2,63 @@
 <html lang="en">
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glow { box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+        body { font-family: 'Inter', sans-serif; background: #050505; }
+        .logo-font { font-family: 'Dancing Script', cursive; }
+        
+        /* Rotating Border Animation */
+        .border-glow {
+            position: relative;
+            background: #050505;
+            border-radius: 12px;
+        }
+        .border-glow::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #06b6d4, #8b5cf6, #ec4899, #06b6d4);
+            background-size: 400%;
+            border-radius: 14px;
+            animation: animate 6s linear infinite;
+            z-index: -1;
+        }
+        @keyframes animate { 0% { background-position: 0 0; } 100% { background-position: 400% 0; } }
+        
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-gray-950 text-white min-h-screen flex flex-col">
+<body class="text-white min-h-screen flex flex-col">
     <!-- Navbar -->
-    <nav class="flex justify-between items-center p-6">
-        <h1 class="text-2xl font-bold tracking-tighter">NEXUS</h1>
-        <button class="bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-500">Sign In</button>
+    <nav class="flex justify-between items-center p-8">
+        <h1 class="text-4xl logo-font text-indigo-400">Nexus</h1>
+        <button class="border border-indigo-500 px-6 py-2 rounded-full hover:bg-indigo-600 transition">Sign In</button>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-grow flex flex-col items-center justify-center p-4">
-        <h2 class="text-4xl font-light mb-8">Build your ideas with Nexus</h2>
+    <!-- Main -->
+    <main class="flex-grow flex flex-col items-center justify-center p-6 text-center">
+        <h2 class="text-5xl font-bold tracking-tight mb-12 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">
+            Turn Your Vision Into Reality with Nexus
+        </h2>
         
-        <!-- Input Area -->
-        <div class="w-full max-w-2xl glass rounded-xl p-4 glow">
-            <textarea class="w-full bg-transparent outline-none p-2" placeholder="Describe an app and let Nexus do the rest"></textarea>
-            <div class="flex justify-between items-center mt-4">
-                <input type="file" id="docUpload" class="hidden" onchange="handleFileUpload(this)">
-                <button onclick="document.getElementById('docUpload').click()" class="p-2 hover:text-indigo-400">📎</button>
-                <button class="bg-indigo-600 px-6 py-2 rounded-full">Send</button>
+        <!-- Animated Input Box -->
+        <div class="w-full max-w-2xl border-glow p-1 glass">
+            <textarea class="w-full bg-transparent outline-none p-4 min-h-[120px]" placeholder="Describe your masterpiece..."></textarea>
+            <div class="flex justify-between items-center p-2 border-t border-white/10">
+                <button class="hover:text-indigo-400 transition">📎 Attach</button>
+                <button class="bg-indigo-600 px-8 py-2 rounded-full font-bold hover:scale-105 transition">Generate</button>
             </div>
         </div>
 
-        <!-- Payment Section -->
-        <div class="mt-12 glass p-6 rounded-xl w-full max-w-md text-center">
-            <h3 class="text-xl mb-4">Support Nexus (Only for India)</h3>
-            <div class="border-2 border-dashed border-gray-600 p-4 mb-4 rounded-lg">
-                <img src="YOUR_QR_CODE_IMAGE_URL" alt="UPI QR" class="mx-auto w-32 h-32">
+        <!-- Payment -->
+        <div class="mt-16 glass p-8 rounded-2xl w-full max-w-sm border border-white/10">
+            <h3 class="text-xl font-bold mb-4">Support Nexus</h3>
+            <div class="bg-white p-2 rounded-lg mb-4 mx-auto w-32">
+                <img src="YOUR_QR_CODE_URL" alt="UPI QR">
             </div>
-            <p class="text-sm text-gray-400 mb-2">nexus.platform@upi</p>
-            <button onclick="copyUPI()" class="text-indigo-400 text-sm hover:underline">Copy UPI ID</button>
+            <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">Only for India</p>
+            <button onclick="alert('Copied!')" class="text-indigo-400 text-sm hover:underline">Copy UPI ID</button>
         </div>
     </main>
-
-    <script>
-        function handleFileUpload(input) { console.log("File selected:", input.files[0].name); }
-        function copyUPI() { navigator.clipboard.writeText("nexus.platform@upi"); alert("UPI ID Copied!"); }
-        // Backend Connect Function
-        async function handleSendMessage(msg) { /* API Logic here */ }
-    </script>
 </body>
 </html>
