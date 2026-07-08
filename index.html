@@ -3,7 +3,7 @@
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0f0f0f; color: white; }
+        body { background: #050505; color: white; font-family: sans-serif; }
         .chatbox-wrapper {
             position: relative;
             background: #1a1a1a;
@@ -33,13 +33,21 @@
         </h2>
         
         <div class="w-full max-w-2xl chatbox-wrapper">
-            <textarea id="nexusInput" class="w-full bg-[#1a1a1a] rounded-xl p-5 outline-none min-h-[140px]" placeholder="Describe an app and let Nexus do the rest"></textarea>
+            <textarea id="nexusInput" class="w-full bg-[#1a1a1a] rounded-xl p-5 outline-none min-h-[140px] text-white" placeholder="Describe an app and let Nexus do the rest"></textarea>
+            <div class="flex justify-between items-center px-4 pb-3">
+                <div class="flex gap-4 text-gray-400">
+                    <button>🎙️</button>
+                    <button>➕</button>
+                </div>
+                <div id="status" class="text-xs text-gray-500">Press Enter to send</div>
+            </div>
         </div>
     </main>
 
     <script>
         const textarea = document.getElementById('nexusInput');
-        const webhookUrl = "https://eojia499pt81q60.m.pipedream.net";
+        const status = document.getElementById('status');
+        const webhookUrl = "https://eojia499pt81q60.m.pipedream.net"; // Yahan apna URL check kar lena
 
         textarea.addEventListener('keydown', async (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -47,18 +55,23 @@
                 const text = textarea.value.trim();
                 if (!text) return;
 
-                textarea.value = "Sending...";
+                status.innerText = "Nexus is thinking...";
+                textarea.disabled = true;
+
                 try {
-                    await fetch(webhookUrl, {
+                    const response = await fetch(webhookUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ prompt: text })
                     });
-                    textarea.value = "";
-                    alert("Nexus got your message!");
+                    
+                    const result = await response.text();
+                    textarea.value = result; // Gemini ka response yahan dikhega
                 } catch (err) {
-                    textarea.value = text;
-                    alert("Backend failed!");
+                    textarea.value = "Error: Could not connect to Nexus.";
+                } finally {
+                    textarea.disabled = false;
+                    status.innerText = "Press Enter to send";
                 }
             }
         });
