@@ -1,55 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #050505; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .chat-box { width: 90%; max-width: 600px; background: #1a1a1a; border-radius: 20px; padding: 15px; border: 1px solid #333; }
-        textarea { width: 100%; background: transparent; border: none; outline: none; color: white; font-size: 16px; min-height: 100px; resize: none; }
-        .controls { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 10px; }
-        button { background: #3b82f6; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; }
-        button:disabled { background: #555; cursor: not-allowed; }
+        body { background: #050505; color: white; font-family: sans-serif; }
+        .chatbox-wrapper {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1px;
+        }
+        /* Yeh hai wo glowing lighting effect */
+        .chatbox-wrapper::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4);
+            z-index: -1;
+            opacity: 0.8;
+            filter: blur(2px);
+        }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
 
-<div class="chat-box">
-    <textarea id="nexusInput" placeholder="Describe your masterpiece..."></textarea>
-    <div class="controls">
-        <span style="color: gray; font-size: 12px;">Nexus AI</span>
-        <button id="sendBtn" disabled>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-        </button>
+    <h1 class="text-4xl font-bold mb-10 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">
+        Nexus Pro
+    </h1>
+    
+    <div class="w-full max-w-2xl chatbox-wrapper">
+        <textarea id="nexusInput" class="w-full bg-[#1a1a1a] rounded-xl p-5 outline-none min-h-[140px] text-white" placeholder="Describe an app..."></textarea>
+        <div class="flex justify-between items-center px-4 pb-3">
+            <button class="text-gray-400 hover:text-white">📎 Attach</button>
+            <!-- Tera naya Send Button -->
+            <button id="sendBtn" class="bg-blue-600 hover:bg-blue-500 text-white rounded-full p-3 transition-all">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            </button>
+        </div>
     </div>
-</div>
 
-<script>
-    const input = document.getElementById('nexusInput');
-    const btn = document.getElementById('sendBtn');
-    const url = "https://eojia499pt81q60.m.pipedream.net";
+    <script>
+        const input = document.getElementById('nexusInput');
+        const btn = document.getElementById('sendBtn');
+        const webhook = "https://eojia499pt81q60.m.pipedream.net";
 
-    input.addEventListener('input', () => btn.disabled = !input.value.trim());
+        async function sendMsg() {
+            if(!input.value.trim()) return;
+            const text = input.value;
+            input.value = "Nexus is thinking...";
+            
+            try {
+                const res = await fetch(webhook, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ prompt: text })
+                });
+                input.value = await res.text();
+            } catch(e) { input.value = "Error!"; }
+        }
 
-    async function sendMsg() {
-        if(!input.value.trim()) return;
-        const oldVal = input.value;
-        input.value = "Thinking...";
-        input.disabled = btn.disabled = true;
-
-        try {
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ prompt: oldVal })
-            });
-            input.value = await res.text();
-        } catch(e) { input.value = "Error!"; }
-        finally { input.disabled = btn.disabled = false; }
-    }
-
-    btn.addEventListener('click', sendMsg);
-    input.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
-</script>
-
+        btn.addEventListener('click', sendMsg);
+        input.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
+    </script>
 </body>
 </html>
