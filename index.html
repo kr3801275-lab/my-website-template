@@ -3,79 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus AI Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Golden Matte Gradient Outline Effect */
-        .nexus-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            padding: 10px 20px;
-            border: 2px solid transparent;
-            border-image: linear-gradient(to bottom right, #d4af37, #000000);
-            border-image-slice: 1;
-            color: #d4af37;
-            display: inline-block;
-            margin-bottom: 20px;
+        body { background: #050505; color: white; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .nexus-title { 
+            background: linear-gradient(90deg, #d4af37, #000); 
+            -webkit-background-clip: text; 
+            color: transparent; 
+            border-bottom: 2px solid #d4af37; 
+            padding-bottom: 5px;
         }
-        #chat-box { height: 60vh; overflow-y: auto; scroll-behavior: smooth; }
-        .logo { width: 50px; height: 50px; border-radius: 50%; }
+        .chat-area { height: calc(100vh - 180px); overflow-y: auto; }
+        .typing::after { content: '|'; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
-<body class="bg-black text-white p-5">
+<body class="flex flex-col h-screen p-4">
 
-    <!-- Header with Logo and Title -->
-    <div class="flex items-center gap-4">
-        <img src="https://orig00.deviantart.net/c34a/f/2016/045/e/0/nexus_logo_wallpaper_by_pauledwards03-d9rqmvx.png" alt="Logo" class="logo">
-        <div class="nexus-title">NEXUS AI PRO</div>
+    <header class="p-6">
+        <h1 class="nexus-title text-3xl font-black tracking-tighter">NEXUS AI PRO</h1>
+    </header>
+
+    <div id="chatDisplay" class="chat-area p-4 flex flex-col gap-4 max-w-2xl mx-auto w-full">
+        <div class="glass p-4 rounded-2xl w-fit">Hey! Nexus ready hai. Kya build karein aaj?</div>
     </div>
 
-    <!-- Chat Area -->
-    <div id="chat-box" class="border border-gray-800 p-4 rounded-lg bg-gray-900 mb-4"></div>
-
-    <!-- Input Area -->
-    <div class="flex gap-2">
-        <input id="user-input" type="text" class="flex-1 p-3 bg-gray-800 rounded border border-gray-700 text-white focus:outline-none focus:border-yellow-600" placeholder="Ask Nexus anything...">
-        <button onclick="sendMessage()" class="bg-yellow-700 hover:bg-yellow-600 px-6 py-2 rounded font-bold text-black transition">Send</button>
+    <div class="max-w-2xl mx-auto w-full glass p-2 rounded-2xl flex items-center mt-auto">
+        <input id="nexusInput" class="w-full bg-transparent p-3 outline-none" placeholder="Enter your prompt...">
+        <button id="sendBtn" class="bg-white text-black font-bold px-6 py-2 rounded-xl hover:bg-yellow-500 transition">SEND</button>
     </div>
 
     <script>
-        async function sendMessage() {
-            const input = document.getElementById('user-input');
-            const chatBox = document.getElementById('chat-box');
-            if (!input.value) return;
+        const chatDisplay = document.getElementById('chatDisplay');
+        const input = document.getElementById('nexusInput');
+        const webhook = "https://eojia499pt81q60.m.pipedream.net";
 
-            chatBox.innerHTML += `<div class="text-right text-gray-300 mb-3"><b>You:</b> ${input.value}</div>`;
-            const userText = input.value;
-            input.value = '';
-
-            // API Call
-            const response = await fetch('YOUR_PIPEDREAM_URL_HERE', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: userText })
-            });
-            const data = await response.json();
-            
-            // Get response text (Adjust path based on your API response)
-            const botResponse = data.candidates[0].content.parts[0].text;
-            
-            const resDiv = document.createElement('div');
-            resDiv.className = "text-left text-yellow-500 mb-4 font-mono";
-            chatBox.appendChild(resDiv);
-            
-            // Typing Effect
+        async function typeEffect(element, text) {
             let i = 0;
+            element.classList.add('typing');
             function type() {
-                if (i < botResponse.length) {
-                    resDiv.innerHTML += botResponse.charAt(i);
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
                     i++;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                    setTimeout(type, 20); 
+                    chatDisplay.scrollTop = chatDisplay.scrollHeight;
+                    setTimeout(type, 20);
+                } else {
+                    element.classList.remove('typing');
                 }
             }
             type();
         }
+
+        async function sendMessage() {
+            const text = input.value.trim();
+            if(!text) return;
+
+            chatDisplay.innerHTML += `<div class="bg-blue-600/20 p-4 rounded-2xl ml-auto w-fit">${text}</div>`;
+            input.value = "";
+
+            const aiDiv = document.createElement('div');
+            aiDiv.className = "glass p-4 rounded-2xl w-fit";
+            chatDisplay.appendChild(aiDiv);
+
+            const res = await fetch(webhook, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ prompt: text })
+            });
+            const data = await res.json();
+            const answer = data.text || "Nexus active hai!"; // Gemini response field check kar lena
+            
+            typeEffect(aiDiv, answer);
+        }
+
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
     </script>
 </body>
 </html>
