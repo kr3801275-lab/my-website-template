@@ -1,84 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background: #050505; color: white; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .nexus-title { background: linear-gradient(90deg, #d4af37, #000); -webkit-background-clip: text; color: transparent; border-bottom: 2px solid #d4af37; padding-bottom: 5px; }
-        .chat-area { height: calc(100vh - 180px); overflow-y: auto; }
-        .typing::after { content: '|'; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-    </style>
-</head>
-<body class="flex flex-col h-screen p-4">
+That's a very broad topic! "Website" can refer to many things, from what they are to how to build one, what types exist, or specific examples.
 
-    <header class="p-6"><h1 class="nexus-title text-3xl font-black tracking-tighter">NEXUS AI PRO</h1></header>
+To give you the most helpful information, could you tell me what you're interested in? For example:
 
-    <div id="chatDisplay" class="chat-area p-4 flex flex-col gap-4 max-w-2xl mx-auto w-full">
-        <div class="glass p-4 rounded-2xl w-fit">Hey! Nexus ready hai. Kya build karein aaj?</div>
-    </div>
+1.  **What is a website?** (A general definition)
+2.  **How do I make a website?** (Steps, tools, platforms)
+3.  **What are the different types of websites?** (e.g., e-commerce, blog, portfolio, business)
+4.  **I need help with a website I already have.** (Troubleshooting, design tips, SEO)
+5.  **I'm looking for examples of good websites.** (For inspiration, specific industries)
+6.  **What are the key components of a website?** (Domain, hosting, content, design)
+7.  **What does it cost to build/maintain a website?**
 
-    <div class="max-w-2xl mx-auto w-full glass p-2 rounded-2xl flex items-center gap-2 mt-auto">
-        <input type="file" id="imgInput" class="hidden" accept="image/*">
-        <button onclick="document.getElementById('imgInput').click()" class="text-2xl text-gray-400 hover:text-white">+</button>
-        <input id="nexusInput" class="w-full bg-transparent p-3 outline-none" placeholder="Enter your prompt...">
-        <button id="sendBtn" class="bg-white text-black font-bold px-6 py-2 rounded-xl hover:bg-yellow-500 transition">SEND</button>
-    </div>
-
-    <script>
-        const chatDisplay = document.getElementById('chatDisplay');
-        const input = document.getElementById('nexusInput');
-        const imgInput = document.getElementById('imgInput');
-        const webhook = "https://eojia499pt81q60.m.pipedream.net";
-
-        // Image to Base64
-        let base64Image = null;
-        imgInput.onchange = () => {
-            const reader = new FileReader();
-            reader.onload = (e) => { base64Image = e.target.result; alert("Image attached!"); };
-            reader.readAsDataURL(imgInput.files[0]);
-        };
-
-        async function typeEffect(element, text) {
-            let i = 0;
-            element.classList.add('typing');
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i); i++;
-                    chatDisplay.scrollTop = chatDisplay.scrollHeight;
-                    setTimeout(type, 20);
-                } else { element.classList.remove('typing'); }
-            }
-            type();
-        }
-
-        async function sendMessage() {
-            const text = input.value.trim();
-            if(!text && !base64Image) return;
-
-            chatDisplay.innerHTML += `<div class="bg-blue-600/20 p-4 rounded-2xl ml-auto w-fit">${text} ${base64Image ? '📷' : ''}</div>`;
-            input.value = "";
-
-            const aiDiv = document.createElement('div');
-            aiDiv.className = "glass p-4 rounded-2xl w-fit";
-            chatDisplay.appendChild(aiDiv);
-
-            const res = await fetch(webhook, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ prompt: text, image: base64Image })
-            });
-            const data = await res.json();
-            
-            // Backend se sahi response extract karna
-            const answer = data.text || data.response || "Nexus ko samajh nahi aaya!";
-            typeEffect(aiDiv, answer);
-            base64Image = null; // Reset
-        }
-
-        document.getElementById('sendBtn').addEventListener('click', sendMessage);
-    </script>
-</body>
-</html>
+In the meantime, a **website** (also written as web site) is a collection of interconnected web pages and related multimedia content, typically identified with a common domain name and published on at least one web server. Websites are accessible via the Internet through a web browser. They can serve many purposes, from providing information and entertainment to facilitating e-commerce and social interaction.
