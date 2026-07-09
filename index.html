@@ -1,57 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #0b0f19; color: #e2e8f0; }
-        .chat-bubble { background-color: #1a202c; border-radius: 12px; padding: 12px 16px; margin: 8px 0; max-width: 80%; }
-        .user-msg { background-color: #1e3a8a; margin-left: auto; }
-        .input-box { background-color: #1a202c; border: 1px solid #2d3748; }
-    </style>
-</head>
-<body class="h-screen flex flex-col p-6">
-    <h1 class="text-xl font-bold text-gray-300 border-b border-gray-700 pb-2 mb-4">NEXUS AI PRO</h1>
-    
-    <div id="chatDisplay" class="flex-1 overflow-y-auto mb-4">
-        <div class="chat-bubble">Hey! Nexus ready hai. Kya build karein aaj?</div>
-    </div>
+The term "web" most commonly refers to the **World Wide Web (WWW)**, which is a global system of interconnected documents and other web resources (like images, videos, applications) that are accessible via the Internet.
 
-    <div class="input-box rounded-xl p-2 flex items-center gap-3">
-        <input id="nexusInput" type="text" class="flex-1 bg-transparent outline-none p-2" placeholder="Enter prompt...">
-        <button id="sendBtn" class="bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold">SEND</button>
-    </div>
+Here's a breakdown of its key aspects:
 
-    <script>
-        const chatDisplay = document.getElementById('chatDisplay');
-        const input = document.getElementById('nexusInput');
-        const webhook = "https://eojia499pt81q60.m.pipedream.net";
+1.  **What it is:** It's a vast collection of information, linked together by hyperlinks, which users can access using web browsers. It's often mistakenly used interchangeably with "the Internet," but the Internet is the underlying network infrastructure (the roads), while the Web is a service built on top of that infrastructure (the traffic on the roads, the houses, the shops).
 
-        async function sendMessage() {
-            const text = input.value.trim();
-            if(!text) return;
+2.  **How it works:**
+    *   **Web Browsers:** Software like Chrome, Firefox, Safari, Edge that allow you to view web pages and interact with web applications.
+    *   **Web Servers:** Computers that store web pages and other web content and deliver it to browsers upon request.
+    *   **HTTP (Hypertext Transfer Protocol):** The set of rules used for transferring web pages and other web content over the Internet.
+    *   **URLs (Uniform Resource Locators):** The addresses used to locate specific resources on the web (e.g., `https://www.example.com`).
+    *   **HTML (Hypertext Markup Language):** The standard language for creating web pages, defining their structure and content.
+    *   **CSS (Cascading Style Sheets):** Used for styling the appearance of web pages (colors, fonts, layout).
+    *   **JavaScript:** A programming language that makes web pages interactive and dynamic.
 
-            chatDisplay.innerHTML += `<div class="chat-bubble user-msg">${text}</div>`;
-            input.value = "";
+3.  **Purpose:** It allows for massive information sharing, communication (email, social media), e-commerce, entertainment, education, and much more, essentially forming the backbone of modern digital life.
 
-            try {
-                const res = await fetch(webhook, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ prompt: text })
-                });
-                
-                const data = await res.json();
-                chatDisplay.innerHTML += `<div class="chat-bubble">${data.answer || "No response"}</div>`;
-            } catch(e) {
-                console.error("Error:", e);
-                chatDisplay.innerHTML += `<div class="chat-bubble text-red-400">Error: Connection failed.</div>`;
-            }
-            chatDisplay.scrollTop = chatDisplay.scrollHeight;
-        }
+4.  **Creator:** The World Wide Web was invented by **Tim Berners-Lee** in 1989 while he was working at CERN.
 
-        document.getElementById('sendBtn').onclick = sendMessage;
-    </script>
-</body>
-</html>
+Beyond the World Wide Web, "web" can also refer to:
+
+*   **Web Development:** The process of creating websites and web applications.
+*   **Web Technologies:** The various tools, languages, and protocols used to build and operate the web.
+*   **A spider's web:** In a non-computing context.
+
+Do you have a specific aspect of the web you'd like to know more about?
