@@ -5,34 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #050505; color: white; font-family: 'Segoe UI', sans-serif; }
-        .chat-area { height: calc(100vh - 180px); overflow-y: auto; scroll-behavior: smooth; }
-        .user-msg { background: #3b82f6; align-self: flex-end; border-radius: 18px 18px 4px 18px; }
-        .ai-msg { background: #1a1a1a; align-self: flex-start; border-radius: 18px 18px 18px 4px; border: 1px solid #333; }
-        /* Custom Scrollbar */
+        body { background-color: #020617; color: white; font-family: 'Inter', sans-serif; }
+        .chat-area { height: calc(100vh - 160px); overflow-y: auto; scroll-behavior: smooth; }
+        .user-msg { background: linear-gradient(135deg, #3b82f6, #2563eb); align-self: flex-end; border-radius: 16px 16px 2px 16px; }
+        .ai-msg { background: #1e293b; align-self: flex-start; border-radius: 16px 16px 16px 2px; border: 1px solid #334155; }
+        
+        /* Thinking Animation */
+        .loader { width: 20px; height: 20px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         .chat-area::-webkit-scrollbar { width: 6px; }
-        .chat-area::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .chat-area::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="flex flex-col h-screen">
+<body class="flex flex-col h-screen overflow-hidden">
 
-    <!-- Header -->
-    <header class="p-4 border-b border-gray-800 text-center font-bold text-xl bg-[#0a0a0a]">
+    <header class="p-4 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md text-center font-bold text-xl tracking-wider">
         NEXUS AI <span class="text-blue-500">PRO</span>
     </header>
 
-    <!-- Chat Display Area -->
-    <div id="chatDisplay" class="chat-area p-4 flex flex-col gap-4 max-w-2xl mx-auto w-full">
-        <!-- AI Welcome Message -->
-        <div class="ai-msg p-4 max-w-[80%]">Hey! Main Nexus hoon. Batao, aaj kya build karna hai? 🚀</div>
+    <div id="chatDisplay" class="chat-area p-6 flex flex-col gap-6 max-w-3xl mx-auto w-full">
+        <div class="ai-msg p-4 max-w-[80%] shadow-lg shadow-blue-900/10">Hey! Main Nexus hoon. Batao, aaj kya build karna hai? 🚀</div>
     </div>
 
-    <!-- Sticky Input Area -->
-    <div class="p-4 bg-[#050505]">
-        <div class="max-w-2xl mx-auto bg-[#1a1a1a] rounded-2xl border border-gray-700 p-2 flex items-center">
-            <textarea id="nexusInput" rows="1" class="w-full bg-transparent outline-none p-2 text-white resize-none" placeholder="Describe your app idea..."></textarea>
-            <button id="sendBtn" class="bg-blue-600 p-3 rounded-full hover:bg-blue-500 transition">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    <div class="p-4 bg-slate-950">
+        <div class="max-w-3xl mx-auto bg-slate-900 rounded-2xl border border-slate-700 p-2 flex items-center shadow-2xl focus-within:ring-2 focus-within:ring-blue-500/50">
+            <textarea id="nexusInput" rows="1" class="w-full bg-transparent outline-none p-3 text-white placeholder-slate-500 resize-none" placeholder="Describe your app idea..."></textarea>
+            <button id="sendBtn" class="bg-blue-600 p-3 rounded-xl hover:bg-blue-500 transition">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
             </button>
         </div>
     </div>
@@ -43,12 +43,13 @@
         const btn = document.getElementById('sendBtn');
         const webhook = "https://eojia499pt81q60.m.pipedream.net";
 
-        function addMsg(text, type) {
+        function addMsg(text, type, isLoader = false) {
             const div = document.createElement('div');
-            div.className = `p-4 max-w-[80%] ${type === 'user' ? 'user-msg ml-auto' : 'ai-msg'}`;
-            div.innerText = text;
+            div.className = `p-4 max-w-[80%] ${type === 'user' ? 'user-msg ml-auto' : 'ai-msg'} animate-in fade-in zoom-in duration-300`;
+            div.innerHTML = isLoader ? `<span class="loader"></span>` : text;
             chatDisplay.appendChild(div);
             chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            return div;
         }
 
         async function sendMessage() {
@@ -57,6 +58,7 @@
 
             addMsg(text, 'user');
             input.value = "";
+            const loaderDiv = addMsg('', 'ai', true);
 
             try {
                 const res = await fetch(webhook, {
@@ -65,9 +67,9 @@
                     body: JSON.stringify({ prompt: text })
                 });
                 const answer = await res.text();
-                addMsg(answer.replace(/<\/?[^>]+(>|$)/g, ""), 'ai');
+                loaderDiv.innerHTML = answer.replace(/<\/?[^>]+(>|$)/g, "");
             } catch(e) {
-                addMsg("Error: Nexus response nahi de raha.", 'ai');
+                loaderDiv.innerHTML = "Error: Nexus response nahi de raha.";
             }
         }
 
