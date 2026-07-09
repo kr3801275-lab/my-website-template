@@ -13,17 +13,14 @@
 </head>
 <body class="h-screen flex flex-col p-4 md:p-8">
 
-    <!-- Header -->
     <header class="mb-6">
         <h1 class="text-xl font-bold tracking-widest text-gray-300 border-b border-gray-700 pb-2 inline-block">NEXUS AI PRO</h1>
     </header>
 
-    <!-- Chat Display -->
     <div id="chatDisplay" class="flex-1 overflow-y-auto mb-4">
         <div class="chat-bubble">Hey! Nexus ready hai. Kya build karein aaj?</div>
     </div>
 
-    <!-- Input Area -->
     <div class="input-box rounded-xl p-2 flex items-center gap-3">
         <button class="text-gray-400 hover:text-white px-2">+</button>
         <input id="nexusInput" type="text" class="flex-1 bg-transparent outline-none p-2" placeholder="Enter your prompt...">
@@ -34,40 +31,46 @@
     <script>
         const chatDisplay = document.getElementById('chatDisplay');
         const input = document.getElementById('nexusInput');
-        const webhook = "YOUR_PIPEDREAM_URL_HERE"; // <--- Yahan apna URL paste kar
+        const webhook = "[https://eojia499pt81q60.m.pipedream.net]"; // Yahan apna Pipedream URL daal
 
         async function sendMessage() {
             const text = input.value.trim();
             if(!text) return;
 
-            // User Message UI
+            // 1. UI mein user ka message add karo
             chatDisplay.innerHTML += `<div class="chat-bubble user-msg">${text}</div>`;
             input.value = "";
             chatDisplay.scrollTop = chatDisplay.scrollHeight;
 
-            // API Call to Backend
+            // 2. Pipedream ko request bhejo
             try {
                 const res = await fetch(webhook, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ prompt: text })
                 });
+
+                // 3. Pipedream se response lo (JSON format)
+                const data = await res.json(); 
                 
-                // Backend se jo aayega wahi display hoga
-                const answer = await res.text(); 
-                
-                // AI Response UI
+                // 4. Pipedream mein jo key set ki thi (answer), wahi yahan use karo
+                const botReply = data.answer || "Nexus ne response nahi diya."; 
+
+                // 5. AI ka response UI mein dikhao
                 const aiDiv = document.createElement('div');
                 aiDiv.className = "chat-bubble";
-                aiDiv.innerText = answer;
+                aiDiv.innerText = botReply;
                 chatDisplay.appendChild(aiDiv);
                 chatDisplay.scrollTop = chatDisplay.scrollHeight;
+
             } catch(e) {
-                chatDisplay.innerHTML += `<div class="chat-bubble text-red-400">Error: Nexus connect nahi hua.</div>`;
+                console.error(e);
+                chatDisplay.innerHTML += `<div class="chat-bubble text-red-400">Error: Nexus backend connect nahi hua.</div>`;
             }
         }
 
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
     </script>
 </body>
 </html>
