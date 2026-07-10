@@ -1,10 +1,71 @@
-안녕하세요! "ko"라고 말씀하셨는데, 혹시 **한국 (Korea)** 또는 **한국어 (Korean language)** 에 대해 궁금한 점이 있으신가요?
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0b0f19; color: #e2e8f0; font-family: sans-serif; }
+        .chat-bubble { background-color: #1a202c; border-radius: 12px; padding: 12px 16px; margin: 8px 0; max-width: 80%; width: fit-content; }
+        .user-msg { background-color: #1e3a8a; margin-left: auto; }
+        .input-box { background-color: #1a202c; border: 1px solid #2d3748; }
+    </style>
+</head>
+<body class="h-screen flex flex-col p-4 md:p-8">
 
-어떤 도움이 필요하신지 알려주시면 제가 더 자세히 안내해 드릴 수 있습니다. 예를 들어:
+    <header class="mb-6">
+        <h1 class="text-xl font-bold tracking-widest text-gray-300 border-b border-gray-700 pb-2 inline-block">NEXUS AI PRO</h1>
+    </header>
 
-*   **한국어로 번역을 원하시나요?**
-*   **한국에 대한 정보를 찾으시나요?**
-*   **한국어 학습에 대한 질문이 있으신가요?**
-*   **아니면 다른 의미의 "ko"인가요?**
+    <div id="chatDisplay" class="flex-1 overflow-y-auto mb-4">
+        <div class="chat-bubble">Hey! Nexus ready hai. Kya build karein aaj?</div>
+    </div>
 
-무엇이든 말씀해주세요!
+    <div class="input-box rounded-xl p-2 flex items-center gap-3">
+        <input id="nexusInput" type="text" class="flex-1 bg-transparent outline-none p-2" placeholder="Enter prompt...">
+        <button id="sendBtn" class="bg-blue-600 px-6 py-2 rounded-lg text-sm font-bold hover:bg-blue-500 transition">SEND</button>
+    </div>
+
+    <script>
+        const chatDisplay = document.getElementById('chatDisplay');
+        const input = document.getElementById('nexusInput');
+        const webhook = "https://eojia499pt81q60.m.pipedream.net";
+
+        async function sendMessage() {
+            const text = input.value.trim();
+            if(!text) return;
+
+            chatDisplay.innerHTML += `<div class="chat-bubble user-msg">${text}</div>`;
+            input.value = "";
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+
+            try {
+                const res = await fetch(webhook, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ prompt: text })
+                });
+
+                // Yahan response process ho raha hai
+                const data = await res.json();
+                
+                // Debugging: agar response `answer` key mein nahi hai, toh pura object print karega
+                const botReply = data.answer || (typeof data === 'string' ? data : JSON.stringify(data));
+
+                const aiDiv = document.createElement('div');
+                aiDiv.className = "chat-bubble";
+                aiDiv.innerText = botReply;
+                chatDisplay.appendChild(aiDiv);
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+                
+            } catch(e) {
+                console.error("Fetch Error:", e);
+                chatDisplay.innerHTML += `<div class="chat-bubble text-red-500">Error: Nexus response nahi bhej pa raha. Check Backend Logs!</div>`;
+            }
+        }
+
+        document.getElementById('sendBtn').onclick = sendMessage;
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
+    </script>
+</body>
+</html>
