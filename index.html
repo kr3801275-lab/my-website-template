@@ -1,63 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #0b0f19; color: #e2e8f0; font-family: sans-serif; }
-        .chat-bubble { background-color: #1a202c; border-radius: 12px; padding: 12px 16px; margin: 8px 0; max-width: 80%; width: fit-content; }
-        .user-msg { background-color: #1e3a8a; margin-left: auto; }
-        .input-box { background-color: #1a202c; border: 1px solid #2d3748; }
-    </style>
-</head>
-<body class="h-screen flex flex-col p-6">
-    <h1 class="text-xl font-bold text-gray-300 border-b border-gray-700 pb-2 mb-4">NEXUS AI PRO</h1>
-    
-    <div id="chatDisplay" class="flex-1 overflow-y-auto mb-4">
-        <div class="chat-bubble">Hey! Nexus ready hai. Kya build karein aaj?</div>
-    </div>
+बहुत बढ़िया! ये तो मज़ेदार होगा! एक वेबसाइट बनाना एक बहुत ही रोमांचक और उपयोगी काम है।
 
-    <div class="input-box rounded-xl p-2 flex items-center gap-3">
-        <input id="nexusInput" type="text" class="flex-1 bg-transparent outline-none p-2" placeholder="Enter prompt...">
-        <button id="sendBtn" class="bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold">SEND</button>
-    </div>
+सबसे पहले, हमें यह समझना होगा कि आप किस तरह की वेबसाइट बनाना चाहते हैं? आपके कुछ सवालों के जवाब देने से हम सही दिशा में आगे बढ़ पाएंगे:
 
-    <script>
-        const chatDisplay = document.getElementById('chatDisplay');
-        const input = document.getElementById('nexusInput');
-        const webhook = "https://eojia499pt81q60.m.pipedream.net";
+1.  **आप किस तरह की वेबसाइट बनाना चाहते हैं?**
+    *   क्या यह एक **पर्सनल ब्लॉग** होगा (जहाँ आप अपने विचार, कहानियाँ, अनुभव साझा करेंगे)?
+    *   एक **बिज़नेस वेबसाइट** (अपने व्यवसाय, सेवाओं या उत्पादों के बारे में जानकारी देने के लिए)?
+    *   एक **ऑनलाइन दुकान (e-commerce)** (जहाँ आप चीज़ें बेचेंगे)?
+    *   एक **पोर्टफोलियो** (अपने काम, कला या परियोजनाओं को प्रदर्शित करने के लिए)?
+    *   एक **सूचनात्मक वेबसाइट** (किसी विशेष विषय पर जानकारी देने के लिए)?
+    *   या कुछ और?
 
-        async function sendMessage() {
-            const text = input.value.trim();
-            if(!text) return;
+2.  **आप इस वेबसाइट पर क्या दिखाना चाहेंगे?**
+    *   (जैसे टेक्स्ट, तस्वीरें, वीडियो, संपर्क फ़ॉर्म, उत्पादों की सूची, सेवाएँ आदि।)
 
-            chatDisplay.innerHTML += `<div class="chat-bubble user-msg">${text}</div>`;
-            input.value = "";
-            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+3.  **क्या आपको कोडिंग का अनुभव है, या आप एक आसान तरीका ढूंढ रहे हैं जिसमें कोडिंग न करनी पड़े?**
+    *   **नो-कोड / लो-कोड प्लेटफ़ॉर्म:** (जैसे WordPress (जो बहुत लोकप्रिय है), Wix, Squarespace, Shopify (e-commerce के लिए) आदि, जिनसे आप बिना कोडिंग के भी अच्छी वेबसाइट बना सकते हैं।)
+    *   **कोडिंग से बनाना:** (HTML, CSS, JavaScript, PHP/Python/Ruby आदि का उपयोग करके, जो अधिक लचीलापन देता है लेकिन अधिक तकनीकी ज्ञान की आवश्यकता होती है।)
 
-            try {
-                const res = await fetch(webhook, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ prompt: text })
-                });
-                
-                const data = await res.json();
-                console.log("Full Response:", data); // F12 console mein check kar
+एक बार जब ये बातें स्पष्ट हो जाएंगी, तो हम आगे की योजना बना सकते हैं - जैसे डोमेन नेम चुनना, होस्टिंग लेना, डिज़ाइन पर काम करना और कंटेंट डालना।
 
-                // Path: Pipedream JSON mein "answer" key hai toh wo dikhao, varna poora object
-                const botReply = data.answer ? data.answer : JSON.stringify(data);
-                
-                chatDisplay.innerHTML += `<div class="chat-bubble">${botReply}</div>`;
-            } catch(e) {
-                console.error("Error:", e);
-                chatDisplay.innerHTML += `<div class="chat-bubble text-red-400">Error: Backend se data nahi mila. Check Console!</div>`;
-            }
-            chatDisplay.scrollTop = chatDisplay.scrollHeight;
-        }
-
-        document.getElementById('sendBtn').onclick = sendMessage;
-    </script>
-</body>
-</html>
+बताओ, क्या सोचा है? हम बिलकुल शुरू से शुरू कर सकते हैं!
