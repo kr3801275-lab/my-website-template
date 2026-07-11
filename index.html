@@ -1,125 +1,59 @@
-That's a fantastic goal! Building a website can be incredibly rewarding, whether it's for a business, a personal project, a portfolio, or just for fun.
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050505; color: white; }
+        .chat-layout { display: grid; grid-template-rows: 1fr auto; height: 100vh; padding: 20px; }
+    </style>
+</head>
+<body>
 
-To give you the best advice, I need a little more information about **what kind of website you want to build and what your experience level is.**
+    <div id="app" class="chat-layout max-w-5xl mx-auto">
+        <div id="chat-history" class="flex flex-col space-y-6 overflow-y-auto p-4 scroll-smooth">
+            <div id="hero-text" class="text-center mt-20">
+                <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Let's build something!</h1>
+            </div>
+        </div>
 
-However, I can give you a comprehensive overview of the general steps involved. There are essentially two main paths you can take:
+        <div class="bg-gray-900/40 p-4 rounded-3xl border border-gray-800 flex items-center gap-4">
+            <input type="text" id="user-input" class="w-full bg-transparent outline-none text-lg px-4" placeholder="Describe your website...">
+            <button class="text-2xl text-gray-400 hover:text-white">+</button>
+        </div>
+    </div>
 
-**Path 1: Using a Website Builder (Easiest, Beginner-Friendly, Less Control)**
-This is like building with LEGOs. You use a platform that provides everything you need in one package: hosting, design tools, and often a domain name.
+    <script>
+        const input = document.getElementById('user-input');
+        const history = document.getElementById('chat-history');
 
-**Path 2: Using a Content Management System (CMS) like WordPress (More Flexible, Steeper Learning Curve, More Control)**
-This is like having a fully customizable toolkit. You get more control over every aspect but need to manage hosting and sometimes other technical details yourself.
+        input.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter' && input.value.trim() !== "") {
+                document.getElementById('hero-text').style.display = 'none';
+                const prompt = input.value;
+                input.value = '';
+                
+                history.innerHTML += `<div class="self-end bg-blue-600 p-3 rounded-xl max-w-md">${prompt}</div>`;
 
-**Path 3: Coding It From Scratch (Most Control, Requires Programming Skills)**
-This is like designing and building a house from raw materials. Only recommended if you have web development experience or are eager to learn to code.
+                const aiDiv = document.createElement('div');
+                aiDiv.className = "self-start bg-gray-800 p-4 rounded-xl max-w-2xl text-gray-200";
+                history.appendChild(aiDiv);
 
----
-
-### General Steps to Building a Website (Applies to most paths):
-
-#### Phase 1: Planning & Preparation
-
-1.  **Define Your Purpose & Goals:**
-    *   **Why are you building this website?** (e.g., Sell products, share a blog, create an online portfolio, promote a business, create an informational resource, build a community forum).
-    *   **Who is your target audience?**
-    *   **What content will you include?** (e.g., text, images, videos, blog posts, product listings).
-    *   **What features do you need?** (e.g., contact form, e-commerce store, booking system, photo gallery, blog comments, user login).
-
-2.  **Plan Your Content & Structure:**
-    *   **Site Map:** What are the main pages? (e.g., Home, About Us, Services, Blog, Contact, Shop).
-    *   **Content Outline:** What will go on each page?
-
-#### Phase 2: Core Infrastructure
-
-3.  **Choose a Domain Name:**
-    *   This is your website's address (e.g., `yourwebsite.com`).
-    *   Make it memorable, easy to type, and relevant.
-    *   You'll purchase this from a domain registrar (e.g., GoDaddy, Namecheap, Google Domains).
-
-4.  **Select Web Hosting:**
-    *   This is where your website's files "live" on the internet.
-    *   **If using a Website Builder (Wix, Squarespace, Shopify):** Hosting is usually included in your subscription.
-    *   **If using a CMS (WordPress.org, Joomla, Drupal):** You'll need to buy hosting separately from a web hosting provider (e.g., SiteGround, Bluehost, Hostinger, WP Engine).
-        *   **Shared Hosting:** Most common for beginners, affordable.
-        *   **VPS/Dedicated Hosting:** For larger, high-traffic sites, more expensive.
-
-#### Phase 3: Building & Designing
-
-5.  **Choose Your Platform/Method:**
-
-    *   **A. Website Builders (Recommended for most beginners):**
-        *   **Pros:** Drag-and-drop interface, all-in-one solution, no coding required, fast setup.
-        *   **Cons:** Less flexibility, can be harder to migrate later, monthly subscription.
-        *   **Popular Options:**
-            *   **Wix:** Very flexible drag-and-drop, great for small businesses, portfolios.
-            *   **Squarespace:** Beautiful templates, popular with creatives, good for portfolios, blogs, small shops.
-            *   **Shopify:** *Specifically for e-commerce stores.* If you're selling products, this is a top choice.
-            *   **Weebly:** User-friendly, good for small sites.
-            *   **WordPress.com:** Hosted version of WordPress, simpler than self-hosted but less control.
-
-    *   **B. Content Management Systems (CMS) (Recommended for more control & scalability):**
-        *   **Pros:** Highly flexible, scalable, vast ecosystem of themes/plugins, you own your data.
-        *   **Cons:** Steeper learning curve, requires managing hosting, updates, and security.
-        *   **Popular Options:**
-            *   **WordPress.org (Self-Hosted WordPress):** The most popular website platform in the world. Powers over 40% of all websites. Incredibly versatile for blogs, business sites, e-commerce (with WooCommerce), etc. Requires a separate hosting plan.
-            *   **Joomla! / Drupal:** Other powerful CMS options, generally have a steeper learning curve than WordPress.
-
-    *   **C. Custom Code (HTML, CSS, JavaScript, Backend Languages):**
-        *   **Pros:** Ultimate control, completely unique design and functionality.
-        *   **Cons:** Requires significant programming knowledge, time-consuming, expensive if you hire a developer.
-        *   **When to use:** For very complex, unique web applications or if you are a web developer yourself.
-
-6.  **Build Your Website (Using your chosen platform):**
-
-    *   **Website Builders:**
-        *   Sign up for a plan.
-        *   Choose a template/theme.
-        *   Drag-and-drop your content (text, images, videos) onto pages.
-        *   Customize colors, fonts, layouts to match your brand.
-        *   Add your chosen features (contact forms, galleries, e-commerce elements).
-
-    *   **Self-Hosted CMS (e.g., WordPress.org):**
-        *   Install WordPress on your web host (many hosts offer one-click installation).
-        *   Choose and install a **Theme** (this dictates the look and layout). There are thousands of free and paid themes.
-        *   Install **Plugins** to add functionality (e.g., SEO, security, contact forms, caching, e-commerce with WooCommerce).
-        *   Create your **Pages** (Home, About, Contact, etc.) and add your content.
-        *   Set up your **Navigation Menus**.
-        *   Customize your site's appearance using the theme options and the WordPress Customizer.
-
-#### Phase 4: Launch & Beyond
-
-7.  **Optimize for Search Engines (Basic SEO):**
-    *   Use relevant keywords in your page titles, headings, and content.
-    *   Write descriptive meta descriptions.
-    *   Use "alt text" for images.
-    *   Ensure your site is fast and mobile-friendly.
-
-8.  **Test Your Website:**
-    *   Check all links to ensure they work.
-    *   Test all forms (contact forms, sign-up forms).
-    *   View your site on different devices (desktop, tablet, phone) to ensure it's responsive.
-    *   Check for typos and grammatical errors.
-    *   Test site speed.
-
-9.  **Set Up Analytics (e.g., Google Analytics):**
-    *   Track visitors, page views, and how people interact with your site.
-
-10. **Launch Your Website!**
-    *   If using a builder, you'll usually click a "Publish" button.
-    *   If using a CMS, it's typically live as soon as it's set up, but you might need to change "Coming Soon" page settings.
-
-11. **Maintain & Update:**
-    *   Regularly update your content.
-    *   If using a CMS, keep your platform, themes, and plugins updated for security and performance.
-    *   Regularly back up your website.
-
----
-
-### To help me guide you further, please tell me:
-
-1.  **What is the main purpose of your website?** (e.g., blog, online store, business presence, portfolio, personal project).
-2.  **Do you have any technical experience with coding or web design?** (None, a little, I'm comfortable with tech).
-3.  **What is your budget for building and maintaining the website?** (Free, minimal, willing to pay for quality tools/hosting).
-4.  **How quickly do you need this website up and running?**
-
-Once I have this information, I can give you much more specific recommendations!
+                // Instant Fetch
+                const response = await fetch('https://eojia499pt81q60.m.pipedream.net', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const data = await response.json();
+                
+                // Fast Typing Effect
+                const text = data.answer || "Nexus is ready to build.";
+                for(let char of text) {
+                    aiDiv.innerText += char;
+                    await new Promise(r => setTimeout(r, 10)); // Instant speed
+                }
+            }
+        });
+    </script>
+</body>
+</html>
