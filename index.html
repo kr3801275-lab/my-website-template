@@ -1,58 +1,69 @@
-A **website** is a collection of related web pages, multimedia content, and other digital assets that are grouped together under a common domain name and published on at least one web server.
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .typing::after { content: '|'; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center transition-all duration-700 p-4" id="main-body">
 
-Think of it like a digital "home" or "storefront" on the internet. It can be accessed by anyone with an internet connection using a web browser (like Chrome, Firefox, Safari, Edge).
+    <div id="chat-container" class="w-full max-w-2xl bg-gray-900/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm shadow-2xl">
+        <h1 id="hero-text" class="text-3xl font-bold mb-6 text-center text-gray-400">Let's build something!</h1>
+        
+        <div id="chat-history" class="h-64 overflow-y-auto mb-4 space-y-4"></div>
 
-Here's a breakdown of what that means:
+        <div class="relative flex items-center">
+            <input type="text" id="user-input" class="w-full bg-black border border-gray-700 rounded-full py-3 px-6 outline-none focus:border-blue-500" placeholder="Describe your website...">
+            <input type="file" id="file-upload" class="hidden">
+            <button onclick="document.getElementById('file-upload').click()" class="ml-3 text-2xl text-gray-500 hover:text-blue-400">+</button>
+        </div>
+    </div>
 
-1.  **Web Pages:** These are the individual "documents" that make up a website. They are typically written in HTML (HyperText Markup Language) and styled with CSS (Cascading Style Sheets). They can contain text, images, videos, audio, and interactive elements.
-2.  **Multimedia Content:** This includes all the non-text elements like images (JPEG, PNG, GIF), videos (MP4, WebM), audio (MP3, WAV), and other interactive files.
-3.  **Digital Assets:** Any files, documents, or data that contribute to the website's functionality or content.
-4.  **Domain Name:** This is the unique, human-readable address that identifies a website on the internet (e.g., `google.com`, `wikipedia.org`, `yourbusiness.net`). It's what people type into their browser to find your site.
-5.  **Web Server:** This is a powerful computer that stores all the website's files and delivers them to users' web browsers when requested.
-6.  **Web Browser:** This is the software application (like Chrome, Firefox) that a user uses to access and display web pages.
+    <script>
+        const input = document.getElementById('user-input');
+        const container = document.getElementById('main-body');
+        const history = document.getElementById('chat-history');
 
-**How a Website Works (Simplified):**
+        input.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                // Transition to bottom
+                container.classList.remove('justify-center');
+                container.classList.add('justify-end');
+                document.getElementById('hero-text').classList.add('hidden');
 
-1.  You type a **domain name** (e.g., `example.com`) into your web browser.
-2.  Your browser sends a request to a **DNS server** (Domain Name System), which translates the domain name into an **IP address** (a numerical address like `192.0.2.1`).
-3.  Your browser then sends a request to the **web server** at that IP address.
-4.  The web server locates the requested web page files and sends them back to your browser.
-5.  Your browser renders these files (HTML, CSS, JavaScript) to display the website on your screen.
+                const prompt = input.value;
+                input.value = '';
+                
+                // Add User Message
+                history.innerHTML += `<div class="text-right text-blue-400">You: ${prompt}</div>`;
 
-**Purposes of a Website:**
-
-Websites serve a vast array of purposes, including:
-
-*   **Information Sharing:** News sites, encyclopedias, blogs, government portals.
-*   **E-commerce:** Online stores for buying and selling products (Amazon, eBay).
-*   **Marketing & Branding:** Businesses showcasing their products/services, building credibility.
-*   **Communication & Community:** Social media platforms, forums, email services.
-*   **Entertainment:** Streaming services, gaming sites, online magazines.
-*   **Education:** Online courses, university portals, learning resources.
-*   **Personal Use:** Portfolios, personal blogs, online resumes.
-
-**Types of Websites:**
-
-There are countless types, often categorized by their function or content:
-
-*   **Personal Websites/Blogs:** Individuals sharing thoughts, portfolios, or hobbies.
-*   **Business/Corporate Websites:** Companies showcasing services, products, and contact info.
-*   **E-commerce Websites:** Online stores for transactions.
-*   **Educational Websites:** Universities, online courses, informational resources.
-*   **News & Media Websites:** Delivering current events, articles, and reports.
-*   **Social Media Websites:** Platforms for connecting with others (Facebook, Twitter, Instagram).
-*   **Forums & Community Websites:** Spaces for discussion and interaction.
-*   **Portfolio Websites:** Artists, designers, writers showcasing their work.
-*   **Web Applications:** Software that runs in a browser (e.g., Google Docs, online banking portals).
-
-**Key Elements of a Good Website:**
-
-*   **User-Friendly Design (UI/UX):** Easy to navigate and visually appealing.
-*   **Responsive Design:** Works well on all devices (desktops, tablets, phones).
-*   **Fast Loading Speed:** Users won't wait long.
-*   **High-Quality Content:** Relevant, engaging, and well-written.
-*   **Security (HTTPS):** Protects user data and builds trust.
-*   **Clear Call-to-Actions:** Guides users on what to do next.
-*   **Search Engine Optimization (SEO):** Helps people find the site through search engines.
-
-If you have a more specific question about websites (e.g., how to build one, what kind you need, specific technologies), feel free to ask!
+                // Fetch Backend
+                try {
+                    const response = await fetch('https://eojia499pt81q60.m.pipedream.net', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: prompt })
+                    });
+                    const data = await response.json();
+                    
+                    // AI Response with Typing Effect
+                    const aiDiv = document.createElement('div');
+                    aiDiv.className = "text-gray-300";
+                    aiDiv.innerText = "Nexus: ";
+                    history.appendChild(aiDiv);
+                    
+                    let text = data.answer;
+                    for(let char of text) {
+                        aiDiv.innerText += char;
+                        await new Promise(r => setTimeout(r, 20));
+                    }
+                } catch (err) {
+                    history.innerHTML += `<div class="text-red-500">Error connecting to Nexus.</div>`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
